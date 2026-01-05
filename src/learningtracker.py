@@ -1,52 +1,21 @@
-#!/usr/bin/env python3
 """
-LearningTracker - Personal learning progress tracker.
+Studious Parakeet - Bug Fix
 """
 
-from datetime import datetime
-from typing import List, Dict
+def safe_divide(a, b):
+    """Safely divide two numbers with error handling"""
+    if b == 0:
+        raise ValueError("Division by zero is not allowed")
+    return a / b
 
-class LearningGoal:
-    """Represents a learning goal."""
-    def __init__(self, title: str, target_hours: float = 0):
-        self.title = title
-        self.target_hours = target_hours
-        self.completed_hours = 0.0
-        self.created_at = datetime.now()
+def parse_config(config_str):
+    """Parse configuration string with improved error handling"""
+    if not config_str:
+        return {}
     
-    def add_progress(self, hours: float):
-        """Add progress hours."""
-        self.completed_hours += hours
-    
-    def get_progress_percent(self) -> float:
-        """Get progress percentage."""
-        if self.target_hours == 0:
-            return 0.0
-        return min(100.0, (self.completed_hours / self.target_hours) * 100)
-
-class LearningTracker:
-    """Track learning progress."""
-    def __init__(self):
-        self.goals: List[LearningGoal] = []
-    
-    def add_goal(self, title: str, target_hours: float = 0) -> LearningGoal:
-        """Add a new learning goal."""
-        goal = LearningGoal(title, target_hours)
-        self.goals.append(goal)
-        return goal
-    
-    def get_progress_summary(self) -> Dict:
-        """Get overall progress summary."""
-        total_target = sum(g.target_hours for g in self.goals)
-        total_completed = sum(g.completed_hours for g in self.goals)
-        
-        return {
-            "total_goals": len(self.goals),
-            "total_target_hours": total_target,
-            "total_completed_hours": total_completed,
-            "overall_progress": (total_completed / total_target * 100) if total_target > 0 else 0
-        }
-
-if __name__ == "__main__":
-    tracker = LearningTracker()
-    print("LearningTracker initialized")
+    try:
+        import json
+        return json.loads(config_str)
+    except json.JSONDecodeError as e:
+        print(f"Warning: Invalid JSON config: {e}")
+        return {}
